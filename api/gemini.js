@@ -1,13 +1,10 @@
 export default async function handler(req, res) {
-  // گرفتن کلید API از آدرس شما
   const { key } = req.query;
   
   if (!key) {
     return res.status(400).json({ error: "API Key is missing!" });
   }
-
-  // ساخت آدرس اصلی گوگل
-  const targetUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${key}`;
+  const targetUrl = `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-001:predict?key=${key}`;
 
   try {
     const response = await fetch(targetUrl, {
