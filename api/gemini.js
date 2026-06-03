@@ -1,21 +1,24 @@
 export default async function handler(req, res) {
-  const { key } = req.query;
+  const { key, endpoint } = req.query;
   
   if (!key) {
     return res.status(400).json({ error: "API Key is missing!" });
   }
-  const targetUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-image:generateContent?key=${key}`;
+
+  // اگر پارامتر endpoint فرستاده نشود، به صورت پیش‌فرض لیست مدل‌ها را می‌گیرد
+  const apiPath = endpoint || "v1beta/models";
+  const targetUrl = `https://generativelanguage.googleapis.com/${apiPath}?key=${key}`;
 
   try {
     const response = await fetch(targetUrl, {
-      method: 'POST',
+      method: req.method,
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(req.body)
+      body: req.method === 'POST' ? JSON.stringify(req.body) : null
     });
 
     const data = await response.json();
     res.status(response.status).json(data);
   } catch (error) {
-    res.status(500).json({ error: "Server Error: " + error.message });
+    res.status(500).json({ error: "Proxy Error: " + error.message });
   }
 }
